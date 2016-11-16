@@ -24,33 +24,44 @@ function unloadexcept(except)
 
 function initradios()
 {
-    const urls = {
-      "TSF Jazz"    : "http://tsfjazz.ice.infomaniak.ch/tsfjazz-high",
-      "Radio Nova"  : "http://novazz.ice.infomaniak.ch/novazz-128.mp3",
-      "FIP"         : "http://direct.fipradio.fr/live/fip-midfi.mp3",
-    };
+    const radios = [
+        {
+            name : "TSF Jazz",
+            stream : "http://tsfjazz.ice.infomaniak.ch/tsfjazz-high",
+        },
+        {
+            name : "Radio Nova",
+            stream : "http://novazz.ice.infomaniak.ch/novazz-128.mp3",
+        },
+        {
+            name : "FIP",
+            stream : "http://direct.fipradio.fr/live/fip-midfi.mp3"
+        }
+    ];
     const container = document.getElementById("radios");
     first = true;
-    for (var radioName in urls)
+    for (var i=0, radio; radio=radios[i]; i++)
     {
         if (first) first = false;
         else
         {
+            // Horizontal line
             const hr = document.createElement("hr");
             container.appendChild(hr);
         }
         // Create radio name <p>
         const nameElt = document.createElement("p");
         nameElt.className += "radio-name";
-        const nameText = document.createTextNode(radioName);
+        const nameText = document.createTextNode(radio.name);
         nameElt.appendChild(nameText);
         container.appendChild(nameElt);
         // Create radio stream <audio>
         const audio = document.createElement("audio");
         const controls = document.createAttribute("controls");
         audio.setAttributeNode(controls);
-        audio.setAttribute("src", urls[radioName]);
+        audio.setAttribute("src", radio.stream);
         audio.setAttribute("preload", "none");
+        // Unload other loaded streams on play()
         audio.addEventListener(
             "play",
             function () { unloadexcept(audio); });
