@@ -28,6 +28,7 @@ function initradios()
         {
             name : "TSF Jazz",
             stream : "http://tsfjazz.ice.infomaniak.ch/tsfjazz-high",
+            info : "http://www.tsfjazz.com/getSongInformations.php"
         },
         {
             name : "Radio Nova",
@@ -48,6 +49,21 @@ function initradios()
             // Horizontal line
             const hr = document.createElement("hr");
             container.appendChild(hr);
+        }
+        if (radio.info)
+        {
+            // Create radio current track info <iframe>
+            const trackInfoElt = document.createElement("iframe");
+            trackInfoElt.setAttribute("src", radio.info);
+            container.appendChild(trackInfoElt);
+            // Forbidden on cross-origin :-(
+            //// Reload every 2s
+            //setInterval(function() {
+            //        trackInfoElt.contentWindow.location.reload();
+            //    }, 2000);
+            // Break line
+            const br = document.createElement("br");
+            container.appendChild(br);
         }
         // Create radio name <p>
         const nameElt = document.createElement("p");
