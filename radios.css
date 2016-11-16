@@ -1,38 +1,38 @@
 html {
-  font-family: "Courier New", Courier, monospace;
-  text-align: center;
-  font-size: 30px;
-  margin: 2em;
+    font-family: "Courier New", Courier, monospace;
+    text-align: center;
+    font-size: 30px;
+    margin: 2em;
 }
 
 @media (max-width: 1000px) {
-  html {
-    font-size: 3vw;
-  }
+    html {
+        font-size: 3vw;
+    }
 }
 
 header > h1 {
-  font-weight: normal;
+    font-weight: normal;
 }
 
 header > h1 {
-  font-size: 2em;
+    font-size: 2em;
 }
 
 header > p {
-  font-size: 0.6em;
+    font-size: 0.6em;
 }
 
 div#radios {
-  display: table;
-  margin: 2em auto;
-  text-align: right;
+    display: table;
+    margin: 2em auto;
+    text-align: right;
 }
 
 div#radios > p.radio-name,
 div#radios > audio {
-  padding: 1em;
-  display: inline;
-  vertical-align: middle;
+    padding: 1em;
+    display: inline;
+    vertical-align: middle;
 }
 
