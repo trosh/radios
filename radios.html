@@ -88,7 +88,8 @@
               const audios = document.getElementsByTagName("audio");
               for (var i=0, audio2; audio2 = audios[i]; i++)
               {
-                if (audio2 != audio)
+                if (audio2.readyState != 0 && // If station is unloaded, skip
+                    audio2 != audio)          // If selected station, skip
                 {
                   const srcBackup = audio2.src;
                   audio2.src = "";
