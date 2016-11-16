@@ -1,0 +1,99 @@
+<!--
+  -- A few <audio control>s pointing at web radios
+  --
+  -- (c) John Gliksberg 2016
+  --
+  -- There is no guarantee the URLs are valid
+  -- or your browser will display the players correctly.
+  -->
+
+<html>
+  <head>
+    <title>radios</title>
+    <style type="text/css">
+      html {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 4vmin;
+        max-font-size: 40px;
+        text-align: center;
+        margin: 2rem;
+      }
+      header > h1, header > p {
+        font-weight: normal;
+      }
+      header > h1 {
+        font-size: 2rem;
+      }
+      header > p {
+        font-size: 0.6rem;
+      }
+      div#radios {
+        display: table;
+        margin: 2em auto;
+        text-align: right;
+      }
+      div#radios > p.radio-name,
+      div#radios > audio {
+        padding: 1rem;
+        display: inline;
+        vertical-align: middle;
+      }
+    </style>
+    <script type="text/javascript">
+      function autoplay()
+      {
+        var firstaudio = document.getElementsByTagName("audio")[0];
+        firstaudio.autoplay = true;
+        firstaudio.load();
+      }
+      function initradios() {
+        const urls = {
+          "TSF Jazz"    : "http://tsfjazz.ice.infomaniak.ch/tsfjazz-high",
+          "Radio Nova"  : "http://novazz.ice.infomaniak.ch/novazz-128.mp3",
+          "FIP"         : "http://direct.fipradio.fr/live/fip-midfi.mp3",
+        };
+        var container = document.getElementById("radios");
+        var first = true;
+        for (var radioName in urls)
+        {
+          if (first)
+          {
+            first = false;
+          }
+          else
+          {
+            const hr = document.createElement("hr");
+            container.appendChild(hr);
+          }
+          // Create radio name <p>
+          var nameElt = document.createElement("p");
+          nameElt.className += "radio-name";
+          const nameText = document.createTextNode(radioName);
+          nameElt.appendChild(nameText);
+          container.appendChild(nameElt);
+          // Create radio stream <audio>
+          const audio = document.createElement("audio");
+          const controls = document.createAttribute("controls");
+          audio.setAttributeNode(controls);
+          audio.setAttribute("src", urls[radioName]);
+          container.appendChild(audio);
+        }
+      }
+    </script>
+  </head>
+  <body onLoad="initradios();autoplay()">
+    <header>
+      <h1>
+        radios
+      </h1>
+      <p>
+        &copy; 2016
+        <a href="https://github.com/trosh">
+          John Gliksberg
+        </a>
+      </p>
+    </header>
+    <div id="radios">
+    </div>
+  </body>
+</html>
