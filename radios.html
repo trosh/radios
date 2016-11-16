@@ -2,7 +2,7 @@
 
     A few <audio control>s pointing at web radios
 
-    (c) John Gliksberg 2016
+    (c) 2016 John Gliksberg
 
     There is no guarantee the URLs are valid
     or your browser will display the players correctly.
@@ -15,19 +15,23 @@
     <style type="text/css">
       html {
         font-family: "Courier New", Courier, monospace;
-        font-size: 4vmin;
-        max-font-size: 40px;
         text-align: center;
-        margin: 2rem;
+        font-size: 30px;
+        margin: 2em;
       }
-      header > h1, header > p {
+      @media (max-width: 1000px) {
+        html {
+          font-size: 3vw;
+        }
+      }
+      header > h1 {
         font-weight: normal;
       }
       header > h1 {
-        font-size: 2rem;
+        font-size: 2em;
       }
       header > p {
-        font-size: 0.6rem;
+        font-size: 0.6em;
       }
       div#radios {
         display: table;
@@ -36,7 +40,7 @@
       }
       div#radios > p.radio-name,
       div#radios > audio {
-        padding: 1rem;
+        padding: 1em;
         display: inline;
         vertical-align: middle;
       }
@@ -54,8 +58,8 @@
           "Radio Nova"  : "http://novazz.ice.infomaniak.ch/novazz-128.mp3",
           "FIP"         : "http://direct.fipradio.fr/live/fip-midfi.mp3",
         };
-        var container = document.getElementById("radios");
-        var first = true;
+        const container = document.getElementById("radios");
+        first = true;
         for (var radioName in urls)
         {
           if (first)
@@ -68,7 +72,7 @@
             container.appendChild(hr);
           }
           // Create radio name <p>
-          var nameElt = document.createElement("p");
+          const nameElt = document.createElement("p");
           nameElt.className += "radio-name";
           const nameText = document.createTextNode(radioName);
           nameElt.appendChild(nameText);
@@ -78,12 +82,28 @@
           const controls = document.createAttribute("controls");
           audio.setAttributeNode(controls);
           audio.setAttribute("src", urls[radioName]);
+          audio.setAttribute("preload", "none");
+          audio.addEventListener("play", function ()
+            {
+              const audios = document.getElementsByTagName("audio");
+              for (var i=0, audio2; audio2 = audios[i]; i++)
+              {
+                if (audio2 != audio)
+                {
+                  const srcBackup = audio2.src;
+                  audio2.src = "";
+                  audio2.load();
+                  audio2.src = srcBackup;
+                }
+              }
+            });
           container.appendChild(audio);
         }
       }
     </script>
   </head>
-  <body onLoad="initradios();autoplay()">
+  <!-- uncomment to autoplay first radio -->
+  <body onLoad="initradios();//autoplay()">
     <header>
       <h1>
         radios
