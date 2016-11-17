@@ -25,7 +25,7 @@ header > p {
 
 div#radios {
     display: table;
-    margin: 2em auto;
+    margin: 3em auto;
     text-align: right;
 }
 
@@ -37,7 +37,8 @@ div#radios > audio {
 }
 
 div#radios > iframe {
+    width: 100%;
     border: none;
-    height: 40px;
+    height: 35px;
 }
 
