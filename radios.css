@@ -1,5 +1,5 @@
 html {
-    font-family: "Courier New", Courier, monospace;
+    font-family: monospace;
     text-align: center;
     font-size: 30px;
     margin: 2em;
@@ -13,9 +13,6 @@ html {
 
 header > h1 {
     font-weight: normal;
-}
-
-header > h1 {
     font-size: 2em;
 }
 
@@ -23,22 +20,24 @@ header > p {
     font-size: 0.6em;
 }
 
-div#radios {
-    display: table;
-    margin: 3em auto;
-    text-align: right;
+a {
+    text-decoration: none;
 }
 
-div#radios > p.radio-name,
+div#radios {
+    margin: 2em auto;
+}
+
+div#radios > p.name,
 div#radios > audio {
-    padding: 1em;
-    display: inline;
+    padding: 1em 2em;
     vertical-align: middle;
 }
 
-div#radios > iframe {
-    width: 100%;
-    border: none;
-    height: 35px;
+div#radios > p.name > span.info {
+    font-size: 0.6rem;
 }
 
+div#radios > p.name > span.info > span.artist {
+    font-style: italic;
+}
