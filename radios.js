@@ -321,6 +321,12 @@ function initMyRadios()
             handler : fipHandler
         },
         {
+            name    : "Radio Classique",
+            stream  : "http://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3",
+            info    : "http://www.radioclassique.fr/typo3temp/init_player_high.json",
+            handler : classiqueHandler,
+        },
+        {
             name    : "France Inter",
             stream  : "http://direct.franceinter.fr/live/franceinter-midfi.mp3",
         },
@@ -328,12 +334,6 @@ function initMyRadios()
             name    : "France Info",
             stream  : "http://direct.franceinfo.fr/live/franceinfo-midfi.mp3",
         },
-        {
-            name    : "Radio Classique",
-            stream  : "http://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3",
-            info    : "http://www.radioclassique.fr/typo3temp/init_player_high.json",
-            handler : classiqueHandler,
-        }
     ];
     const container = document.getElementById("radios");
     initradios(container, radios);
