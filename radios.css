@@ -46,6 +46,12 @@ div.instr {
     color: #666;
 }
 
+@media (pointer:none) {
+    div.instr {
+        display: none;
+    }
+}
+
 div.instr > table {
     margin: 1em auto;
 }
