@@ -1,43 +1,113 @@
 html {
     font-family: monospace;
     text-align: center;
-    font-size: 30px;
-    margin: 2em;
+    font-size: 20px;
+    background-color: #eee;
+    color: #222;
+    margin: 0;
+    --red: #F93F26;
+    --green: #65B332;
 }
 
-@media (max-width: 1000px) {
-    html {
-        font-size: 3vw;
-    }
-}
-
-header > h1 {
-    font-weight: normal;
-    font-size: 2em;
-}
-
-header > p {
-    font-size: 0.6em;
+body {
+    margin: 0;
 }
 
 a {
     text-decoration: none;
 }
 
-div#radios {
-    margin: 2em auto;
+header {
+    display: table;
+    width: 100%;
+    margin: 0 0 1.5em 0;
+    padding: 0;
+    background-color: #FF644F;
+    color: white;
+    box-shadow: 0 0 7px 3px rgba(0, 0, 0, 0.2); 
+    font-weight: normal;
+    font-size: 2em;
 }
 
-div#radios > p.name,
-div#radios > audio {
-    padding: 1em 2em;
-    vertical-align: middle;
+header > a {
+    display: table-cell;
+    width: 50%;
+    margin: 0;
+    padding: 1em 0;
+    background-color: #333;
+    -webkit-clip-path: polygon(0 0, 100% 0, calc(100% - 1.1em) 100%, 0 100%);
+            clip-path: polygon(0 0, 100% 0, calc(100% - 1.1em) 100%, 0 100%);
+    color: var(--red);
 }
 
-div#radios > p.name > span.info {
-    font-size: 0.6rem;
+p.instr {
+    margin-bottom: 2em;
+    font-size: 0.8em;
+    color: #666;
 }
 
-div#radios > p.name > span.info > span.artist {
+p.instr > span.key {
+    color: var(--green);
+}
+
+p.instr > a {
+    color: var(--red);
+}
+
+p.footer {
+    margin-top: 3em;
+    font-size: 0.6em;
+    color: #777;
+}
+
+p.footer > a {
+    color: #f93f26;
+}
+
+#radios {
+    display: block;
+    width: 100%;
+}
+
+.radio {
+    display: inline-block;
+    margin: 1em;
+    padding: 0;
+    background-color: white;
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
+}
+
+.radio > a {
+    display: table-cell;
+    margin: 0;
+    padding: 1.5em;
+    height: 100%;
+    color: white;
+    cursor: pointer;
+    background-color: var(--green);
+    box-shadow: 6px 0 10px -4px rgba(0, 0, 0, 0.2);
+    z-index: 20;
+}
+
+.radio > a.animated {
+    background-color: #FF644F;
+}
+
+.radio > a.slanted {
+    padding-right: calc(1.5em + 1.5em);
+    -webkit-clip-path: polygon(0 0, 100% 0, calc(100% - 1.5em) 100%, 0 100%);
+}
+
+.radio > span.info {
+    display: table-cell;
+    padding: 0;
+    font-size: 0.8rem;
+}
+
+.radio > span.info.visible {
+    padding: 2.2em;
+}
+
+.radio > span.info > span.artist {
     font-style: italic;
 }

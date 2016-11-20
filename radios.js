@@ -5,18 +5,40 @@ function autoplay()
     firstaudio.load();
 }
 
+function getButt(audio)
+{
+    return audio.nextSibling.firstChild;
+}
+
+HTMLMediaElement.prototype.myLoad = function ()
+{
+    currentAudio = this;
+    this.play();
+    unloadExcept(this);
+    getButt(this).className += " animated";
+}
+
+HTMLMediaElement.prototype.myUnload = function ()
+{
+    const srcBackup = this.src;
+    this.src = "";
+    this.load();
+    this.src = srcBackup;
+    const butt = getButt(this);
+    butt.className =
+        butt.className.replace(/animated/, "")
+            .trim().replace(/\s/g, " ");
+}
+
 function unloadExcept(except)
 {
     const audios = document.getElementsByTagName("audio");
-    for (var i=0, audio; audio = audios[i]; i++)
+    for (const audio of audios)
     {
-        if (audio.readyState != 0 && // If station is unloaded, skip
+        if (//audio.readyState != 0 && // If station is unloaded, skip
             audio != except)         // If selected station, skip
         {
-            const srcBackup = audio.src;
-            audio.src = "";
-            audio.load();
-            audio.src = srcBackup;
+            audio.myUnload();
         }
     }
 }
@@ -38,15 +60,23 @@ function updateInfo(radio, trackInfoElt)
                     // TODO : use ghost element to avoid polluting the DOM tree
                     const newTrackInfoElt = document.createElement("span");
                     newTrackInfoElt.className = trackInfoElt.className;
-                    const replace = radio.handler(newTrackInfoElt, trackInfoRequest.responseText);
-                    if (replace)
-                    {
-                        trackInfoElt.innerHTML = newTrackInfoElt.innerHTML;
-                    }
+                    radio.handler(newTrackInfoElt, trackInfoRequest.responseText);
+                    trackInfoElt.className = newTrackInfoElt.className;
+                    trackInfoElt.innerHTML = newTrackInfoElt.innerHTML;
                 }
                 else
                 {
+                    if (!trackInfoElt.match(/visible/))
+                    {
+                        trackInfoElt.className += " visible";
+                    }
                     trackInfoElt.innerText = trackInfoRequest.responseText;
+                }
+                if (trackInfoElt.innerText !== "" &&
+                    !trackInfoElt.previousSibling.className.match(/slanted/))
+                {
+                    trackInfoElt.previousSibling.className
+                        += " slanted";
                 }
             }
         };
@@ -55,13 +85,20 @@ function updateInfo(radio, trackInfoElt)
 
 function updateTrackInfo(elt, artist, track)
 {
-    // Add artist name
-    const artistElt = document.createElement("span");
-    artistElt.className = "artist";
-    artistElt.textContent = artist;
-    elt.appendChild(artistElt);
-    // Add spacing
-    elt.appendChild(document.createTextNode(" — "));
+    if (!elt.className.match('/visible/'))
+    {
+        elt.className += " visible";
+    }
+    if (artist)
+    {
+        // Add artist name
+        const artistElt = document.createElement("span");
+        artistElt.className = "artist";
+        artistElt.textContent = artist;
+        elt.appendChild(artistElt);
+        // Add spacing
+        elt.appendChild(document.createTextNode(" — "));
+    }
     // Add track name
     const trackElt = document.createElement("span");
     trackElt.className = "track";
@@ -71,45 +108,104 @@ function updateTrackInfo(elt, artist, track)
 
 function initradios(container, radios)
 {
-    first = true;
     for (var i=0, radio; radio=radios[i]; i++)
     {
-        if (first) first = false;
-        else
-        {
-            // Horizontal line
-            const hr = document.createElement("hr");
-            container.appendChild(hr);
-        }
-        // Create radio name <p>
-        const nameElt = document.createElement("p");
-        nameElt.className += "name";
-        const nameText = document.createTextNode(radio.name);
-        nameElt.appendChild(nameText);
-        container.appendChild(nameElt);
-        // Create radio stream <audio>
         const audio = document.createElement("audio");
-        const controls = document.createAttribute("controls");
-        audio.setAttributeNode(controls);
-        audio.setAttribute("src", radio.stream);
-        audio.setAttribute("preload", "none");
-        // Unload other loaded streams on play()
-        audio.addEventListener("play", unloadExcept.bind(audio));
+        audio.style.display = "hidden";
+        audio.controls = false;
+        audio.preload = "none";
+        audio.src = radio.stream;
         container.appendChild(audio);
+        if (i === 0)
+        {
+            currentAudio = audio;
+        }
+        const elt = document.createElement("div");
+        elt.className = "radio";
+        container.appendChild(elt);
+        const butt = document.createElement("a");
+        butt.className = "name";
+        butt.innerText = radio.name;
+        butt.addEventListener("click", function ()
+            {
+                if (!audio.paused)
+                {
+                    audio.myUnload();
+                }
+                else
+                {
+                    audio.myLoad();
+                }
+            });
+        elt.appendChild(butt);
         if (radio.info != "" && radio.info != null)
         {
             // Create radio current track info
-            const separator = document.createTextNode(" / ");
-            nameElt.appendChild(separator);
+            //const separator = document.createTextNode(" / ");
+            //elt.appendChild(separator);
             const trackInfoElt = document.createElement("span");
-            trackInfoElt.className += "info";
-            nameElt.appendChild(trackInfoElt);
+            trackInfoElt.className = "info";
+            elt.appendChild(trackInfoElt);
             // Get info from server (every 5s)
             const boundUpdateInfo = updateInfo.bind(this, radio, trackInfoElt);
             boundUpdateInfo();
-            setInterval(boundUpdateInfo, 5000);
+            setInterval(boundUpdateInfo, 10000);
         }
+        //const br = document.createElement("br");
+        //container.appendChild(br);
     }
+    window.addEventListener("keydown", function (event)
+        {
+            if (event.key === " ")
+            {
+                if (!currentAudio.paused)
+                {
+                    currentAudio.myUnload();
+                }
+                else
+                {
+                    currentAudio.myLoad();
+                }
+                event.preventDefault();
+            }
+            else if (event.key === "j")
+            {
+                var newAudio = currentAudio.nextSibling;
+                while (newAudio.tagName !== "AUDIO")
+                {
+                    newAudio = newAudio.nextSibling;
+                    if (!newAudio)
+                    {
+                        newAudio = document.getElementsByTagName("audio")[0];
+                    }
+                }
+                if (!currentAudio.paused)
+                {
+                    currentAudio.myUnload();
+                    newAudio.myLoad();
+                }
+                currentAudio = newAudio;
+            }
+            else if (event.key === "k")
+            {
+                var newAudio = currentAudio.previousSibling;
+                while (newAudio.tagName !== "AUDIO")
+                {
+                    newAudio = newAudio.previousSibling;
+                    if (!newAudio)
+                    {
+                        const audios = document.getElementsByTagName("audio");
+                        newAudio = audios[audios.length - 1];
+                    }
+                }
+                if (!currentAudio.paused)
+                {
+                    currentAudio.myUnload();
+                    newAudio.myLoad();
+                }
+                currentAudio = newAudio;
+            }
+        });
 }
 
 function fixWord(word)
@@ -118,7 +214,7 @@ function fixWord(word)
          + word.slice(1).toLocaleLowerCase();
 }
 
-String.prototype.fixText = function()
+String.prototype.fixText = function ()
 {
     return this.replace(/\<LL\>/i, "’ll ")
                .replace(/\<D\>/i, "’d ")
@@ -134,7 +230,6 @@ function tsfHandler(elt, text)
     const title  = trackData[1].fixText();
     if (trackData.length != 2) throw "Bad track info";
     updateTrackInfo(elt, artist, title);
-    return true;
 }
 
 // Reuse to avoid filling DOM tree
@@ -146,11 +241,11 @@ function novaHandler(elt, text)
         /<div class="info-col">[\s\S]*?<\/div>/
         .exec(text)[0]
         .replace(/[\s\S]*class="artiste">/, "")
+        .replace(/<a [^>]*>/, "")
         .replace(/<\/span>[\s\S]*/, "");
     const artist = infocol.replace(/<[\s\S]*/ , "").trim().replace(/\//, " / ");
     const title  = infocol.replace( /[\s\S]*>/, "").trim();
     updateTrackInfo(elt, artist, title);
-    return true;
 }
 
 function fipHandler(elt, text)
@@ -163,13 +258,20 @@ function fipHandler(elt, text)
         if (track.start * 1000 <= now
          && track.end   * 1000 >  now)
         {
-            const artist = track.authors.fixText();
-            const title  = track.title  .fixText();
-            updateTrackInfo(elt, artist, title);
-            return true;
+            if (!track.authors)
+            {
+                updateTrackInfo(elt, null, title);
+            }
+            else
+            {
+                const artist = track.authors.fixText();
+                const title  = track.title  .fixText();
+                updateTrackInfo(elt, artist, title);
+            }
+            return;
         }
     }
-    throw "can't find current song";
+    throw "FIP can't find current song";
 }
 
 function initMyRadios()
