@@ -1,3 +1,5 @@
+'use strict';
+
 function autoplay()
 {
     var firstaudio = document.getElementsByTagName("audio")[0];
@@ -12,7 +14,7 @@ function getButt(audio)
 
 HTMLMediaElement.prototype.myLoad = function ()
 {
-    currentAudio = this;
+    window.currentAudio = this;
     this.play();
     unloadExcept(this);
     getButt(this).className += " animated";
@@ -66,7 +68,7 @@ function updateInfo(radio, trackInfoElt)
                 }
                 else
                 {
-                    if (!trackInfoElt.match(/visible/))
+                    if (!trackInfoElt.className.match(/visible/))
                     {
                         trackInfoElt.className += " visible";
                     }
@@ -85,7 +87,7 @@ function updateInfo(radio, trackInfoElt)
 
 function updateTrackInfo(elt, artist, track)
 {
-    if (!elt.className.match('/visible/'))
+    if (!elt.className.match(/visible/))
     {
         elt.className += " visible";
     }
@@ -118,7 +120,7 @@ function initradios(container, radios)
         container.appendChild(audio);
         if (i === 0)
         {
-            currentAudio = audio;
+            window.currentAudio = audio;
         }
         const elt = document.createElement("div");
         elt.className = "radio";
@@ -158,19 +160,19 @@ function initradios(container, radios)
         {
             if (event.key === " ")
             {
-                if (!currentAudio.paused)
+                if (!window.currentAudio.paused)
                 {
-                    currentAudio.myUnload();
+                    window.currentAudio.myUnload();
                 }
                 else
                 {
-                    currentAudio.myLoad();
+                    window.currentAudio.myLoad();
                 }
                 event.preventDefault();
             }
             else if (event.key === "j")
             {
-                var newAudio = currentAudio.nextSibling;
+                var newAudio = window.currentAudio.nextSibling;
                 while (newAudio.tagName !== "AUDIO")
                 {
                     newAudio = newAudio.nextSibling;
@@ -179,16 +181,16 @@ function initradios(container, radios)
                         newAudio = document.getElementsByTagName("audio")[0];
                     }
                 }
-                if (!currentAudio.paused)
+                if (!window.currentAudio.paused)
                 {
-                    currentAudio.myUnload();
+                    window.currentAudio.myUnload();
                     newAudio.myLoad();
                 }
-                currentAudio = newAudio;
+                window.currentAudio = newAudio;
             }
             else if (event.key === "k")
             {
-                var newAudio = currentAudio.previousSibling;
+                var newAudio = window.currentAudio.previousSibling;
                 while (newAudio.tagName !== "AUDIO")
                 {
                     newAudio = newAudio.previousSibling;
@@ -198,12 +200,28 @@ function initradios(container, radios)
                         newAudio = audios[audios.length - 1];
                     }
                 }
-                if (!currentAudio.paused)
+                if (!window.currentAudio.paused)
                 {
-                    currentAudio.myUnload();
+                    window.currentAudio.myUnload();
                     newAudio.myLoad();
                 }
-                currentAudio = newAudio;
+                window.currentAudio = newAudio;
+            }
+            else if (event.key === "?")
+            {
+                const instr = document.getElementsByClassName("instr")[0];
+                const table = instr.getElementsByTagName("table")[0];
+                if (table.className.match(/hide/))
+                {
+                    table.className
+                        = table.className
+                               .replace(/hide/, "")
+                               .replace(/\s*/, " ");
+                }
+                else
+                {
+                    table.className += "hide";
+                }
             }
         });
 }
@@ -216,10 +234,8 @@ function fixWord(word)
 
 String.prototype.fixText = function ()
 {
-    return this.replace(/\<LL\>/i, "’ll ")
-               .replace(/\<D\>/i, "’d ")
-               .replace(/\<S\>/i, "’s ")
-               .replace(/'/, "’")
+    return this.toLocaleUpperCase()
+               .replace(/&quot.*?&quot;/g, "“\\1”")
                .split(" ").map(fixWord).join(" ");
 }
 
@@ -274,6 +290,14 @@ function fipHandler(elt, text)
     throw "FIP can't find current song";
 }
 
+function classiqueHandler(elt, text)
+{
+    const data = JSON.parse(text).trackData;
+    const artist = data.name;
+    const title = data.title + " : " + data.interpretes;
+    updateTrackInfo(elt, artist, title);
+}
+
 function initMyRadios()
 {
     const radios = [
@@ -295,6 +319,20 @@ function initMyRadios()
             stream  : "http://direct.fipradio.fr/live/fip-midfi.mp3",
             info    : "http://www.fipradio.fr/livemeta",
             handler : fipHandler
+        },
+        {
+            name    : "France Inter",
+            stream  : "http://direct.franceinter.fr/live/franceinter-midfi.mp3",
+        },
+        {
+            name    : "France Info",
+            stream  : "http://direct.franceinfo.fr/live/franceinfo-midfi.mp3",
+        },
+        {
+            name    : "Radio Classique",
+            stream  : "http://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3",
+            info    : "http://www.radioclassique.fr/typo3temp/init_player_high.json",
+            handler : classiqueHandler,
         }
     ];
     const container = document.getElementById("radios");

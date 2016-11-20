@@ -20,7 +20,7 @@ a {
 header {
     display: table;
     width: 100%;
-    margin: 0 0 1.5em 0;
+    margin: 0 0 2.5rem 0;
     padding: 0;
     background-color: #FF644F;
     color: white;
@@ -40,23 +40,38 @@ header > a {
     color: var(--red);
 }
 
-p.instr {
-    margin-bottom: 2em;
+div.instr {
+    margin: 2.5rem;
     font-size: 0.8em;
     color: #666;
 }
 
-p.instr > span.key {
+div.instr > table {
+    margin: 1em auto;
+}
+
+div.instr > table.hide {
+    display: none;
+}
+
+div.instr > table > tbody > tr > td:first-child {
+    text-align: left;
+}
+
+div.instr > table > tbody > tr > td:last-child {
+    text-align: right;
+    padding-left: 2em;
+}
+
+span.key,
+div.instr > table > tbody > tr > td:last-child {
     color: var(--green);
 }
 
-p.instr > a {
-    color: var(--red);
-}
-
 p.footer {
-    margin-top: 3em;
+    margin-top: 1.5rem;
     font-size: 0.6em;
+    line-height: 2;
     color: #777;
 }
 
@@ -72,6 +87,8 @@ p.footer > a {
 .radio {
     display: inline-block;
     margin: 1em;
+    margin-bottom: 1.5em;
+    margin-top: 0;
     padding: 0;
     background-color: white;
     box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
