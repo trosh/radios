@@ -132,3 +132,7 @@ p.footer > a {
 .radio > span.info > span.artist {
     font-style: italic;
 }
+
+.radio > span.info > span.interpretes {
+    font-style: italic;
+}

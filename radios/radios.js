@@ -85,7 +85,7 @@ function updateInfo(radio, trackInfoElt)
     trackInfoRequest.send();
 }
 
-function updateTrackInfo(elt, artist, track)
+function updateTrackInfo(elt, artist, track, interpretes)
 {
     if (!elt.className.match(/visible/))
     {
@@ -93,7 +93,6 @@ function updateTrackInfo(elt, artist, track)
     }
     if (artist)
     {
-        // Add artist name
         const artistElt = document.createElement("span");
         artistElt.className = "artist";
         artistElt.textContent = artist;
@@ -106,6 +105,14 @@ function updateTrackInfo(elt, artist, track)
     trackElt.className = "track";
     trackElt.textContent = track;
     elt.appendChild(trackElt);
+    if (interpretes)
+    {
+        elt.appendChild(document.createTextNode(" — "));
+        const interpretesElt = document.createElement("span");
+        interpretesElt.className = "interpretes";
+        interpretesElt.textContent = interpretes;
+        elt.appendChild(interpretesElt);
+    }
 }
 
 function initradios(container, radios)
@@ -294,9 +301,11 @@ function fipHandler(elt, text)
 function classiqueHandler(elt, text)
 {
     const data = JSON.parse(text).trackData;
-    const artist = data.name;
-    const title = data.title + " — " + data.interpretes;
-    updateTrackInfo(elt, artist, title);
+    updateTrackInfo(
+        elt,
+        data.name,
+        data.title,
+        data.interpretes);
 }
 
 function initMyRadios()
