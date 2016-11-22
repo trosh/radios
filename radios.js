@@ -276,6 +276,7 @@ function fipHandler(elt, text)
         {
             if (!track.authors)
             {
+                const title = track.title.fixText();
                 updateTrackInfo(elt, null, title);
             }
             else
