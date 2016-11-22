@@ -6,7 +6,9 @@ ftp -n -v $HOST <<EOF
 ascii
 user $USER "$PASSWD"
 prompt
-cd public_html/radios
+cd public_html
+mput favicon.ico
+cd radios
 mput index.html radios.css radios.js
 bye
 EOF
