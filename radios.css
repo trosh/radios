@@ -46,7 +46,7 @@ div.instr {
     color: #666;
 }
 
-@media (pointer:none) {
+@media all and (min-device-aspect-ratio: 1/1) {
     div.instr {
         display: none;
     }
