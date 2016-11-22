@@ -295,7 +295,7 @@ function classiqueHandler(elt, text)
 {
     const data = JSON.parse(text).trackData;
     const artist = data.name;
-    const title = data.title + " : " + data.interpretes;
+    const title = data.title + " — " + data.interpretes;
     updateTrackInfo(elt, artist, title);
 }
 
