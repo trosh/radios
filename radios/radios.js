@@ -274,12 +274,12 @@ function novaHandler(elt, text)
 function fipHandler(elt, text)
 {
     const steps = JSON.parse(text).steps;
-    const now = Date.now();
+    const now = Math.floor(Date.now()/1000);
     for (const step in steps)
     {
         const track = steps[step];
-        if (track.start * 1000 <= now
-         && track.end   * 1000 >  now)
+        if (track.start <= now
+         && track.end   >  now)
         {
             if (!track.authors)
             {
