@@ -308,6 +308,25 @@ function classiqueHandler(elt, text)
         data.interpretes);
 }
 
+function franceinterHandler(elt, text)
+{
+    const programmes = JSON.parse(text);
+    const now = Math.floor(Date.now()/1000);
+    for (const programme of programmes)
+    {
+        if (programme.start <= now
+         && programme.end   >  now)
+        {
+            updateTrackInfo(
+                elt,
+                programme.conceptTitle,
+                programme.expressionTitle);
+            return;
+        }
+    }
+    throw "France Inter can't find current info";
+}
+
 function initMyRadios()
 {
     const radios = [
@@ -339,6 +358,8 @@ function initMyRadios()
         {
             name    : "France Inter",
             stream  : "http://direct.franceinter.fr/live/franceinter-midfi.mp3",
+            info    : "http://www.franceinter.fr/programmes?xmlHttpRequest=1",
+            handler : franceinterHandler,
         },
         {
             name    : "France Info",
