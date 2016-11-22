@@ -70,6 +70,8 @@ with FTP(host, user, password) as ftp:
         localsubdirs = subdirs
         for subdir in localsubdirs:
             tree(subdir)
+
+    print("\033[7mcurrent files in public_html:\033[m")
     tree(".")
 
     print("\033[7mUploading binary files\033[m")
@@ -84,5 +86,6 @@ with FTP(host, user, password) as ftp:
         with open(ascii, "rb") as fp:
             ftp.storlines("STOR " + ascii, fp)
 
+    print("\033[7mcurrent files in public_html:\033[m")
     tree(".")
 
