@@ -249,9 +249,9 @@ String.prototype.fixText = function ()
 function tsfHandler(elt, text)
 {
     const trackData = text.split("|");
+    if (trackData.length != 2) throw "Bad track info";
     const artist = trackData[0].replace(/\//, " / ").fixText();
     const title  = trackData[1].fixText();
-    if (trackData.length != 2) throw "Bad track info";
     updateTrackInfo(elt, artist, title);
 }
 
