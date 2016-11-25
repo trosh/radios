@@ -6,6 +6,11 @@ from os import walk
 from sys import exit
 from glob import glob
 
+def emph(text):
+    print()
+    print(text)
+    print("=" * len(text))
+
 host = "files.000webhost.com"
 user = "trosh"
 password = getpass(host + " password : ")
@@ -15,16 +20,16 @@ ignores = [gitignore, __file__[2:]] # TODO make sure __file__ works from another
 with open(gitignore, "r") as gitignoref:
     for line in gitignoref:
         ignores.extend(glob(line.rstrip())) # TODO make sure glob works from another path
-print("\033[7mignoring following files\033[m")
-print(" ".join(ignores))
+emph("ignoring following files")
+print(*ignores, sep=" ")
 ignorepaths = [".git"]
 
 binaries = [
     "favicon.ico"
 ]
 
-print("\033[7mbinary files to upload\033[m")
-print(" ".join(binaries))
+emph("binary files to upload")
+print(*binaries, sep=" ")
 
 asciis = []
 # TODO walk in argv[0]'s real path
@@ -37,16 +42,16 @@ for (dirpath, dirnames, filenames) in walk("."):
             continue
         asciis.append((dirpath + "/" + filename)[2:])
 
-print("\033[7mtext files to upload\033[m")
-print(" ".join(asciis))
+emph("text files to upload")
+print(*asciis, sep=" ")
 
-print("\033[7mconnecting... \033[m", end="")
+print("connecting... ", end="")
 with FTP(host, user, password) as ftp:
-    print("\033[7mdone.\033[m")
+    print("done.")
 
-    print("\033[7mentering public_html... \033[m", end="")
+    print("entering public_html... ", end="")
     ftp.cwd("public_html")
-    print("\033[7mdone.\033[m")
+    print("done.")
     # recursive dir()
     global subdirs
     global currpath
@@ -71,21 +76,21 @@ with FTP(host, user, password) as ftp:
         for subdir in localsubdirs:
             tree(subdir)
 
-    print("\033[7mcurrent files in public_html:\033[m")
+    emph("current files in public_html:")
     tree(".")
 
-    print("\033[7mUploading binary files\033[m")
+    emph("Uploading binary files")
     for binary in binaries:
         print(binary)
         with open(binary, "rb") as fp:
             ftp.storbinary("STOR " + binary, fp)
 
-    print("\033[7mUploading text files\033[m")
+    emph("Uploading text files")
     for ascii in asciis:
         print(ascii)
         with open(ascii, "rb") as fp:
             ftp.storlines("STOR " + ascii, fp)
 
-    print("\033[7mcurrent files in public_html:\033[m")
+    emph("current files in public_html:")
     tree(".")
 
