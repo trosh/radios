@@ -16,7 +16,9 @@ user = "trosh"
 password = getpass(host + " password : ")
 
 gitignore = ".gitignore"
-ignores = [gitignore, __file__[2:]] # TODO make sure __file__ works from another path
+ignores = [gitignore]
+if __file__[:2] == "./": ignores.append(__file__[2:])
+else: ignores.append(__file__)
 with open(gitignore, "r") as gitignoref:
     for line in gitignoref:
         ignores.extend(glob(line.rstrip())) # TODO make sure glob works from another path
