@@ -361,6 +361,10 @@ function initMyRadios()
             info    : "http://www.franceinter.fr/programmes?xmlHttpRequest=1",
             handler : franceinterHandler,
         },
+        {
+            name    : "France Info",
+            stream  : "http://direct.franceinfo.fr/live/franceinfo-midfi.mp3",
+        },
     ];
     const container = document.getElementById("radios");
     initradios(container, radios);
